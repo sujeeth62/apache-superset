@@ -43,10 +43,10 @@ RUN set -ex && \
 # =============================================================================
 # Environment Variables
 # =============================================================================
-ENV ORACLE_HOME=/usr/lib/oracle/23/client64 \
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/oracle/23/client64/lib \
-    TNS_ADMIN=/usr/lib/oracle/23/client64/lib/network/admin \
-    PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/playwright-browsers
+ENV ORACLE_HOME=/usr/lib/oracle/23/client64
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/oracle/23/client64/lib
+ENV TNS_ADMIN=/usr/lib/oracle/23/client64/lib/network/admin
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/playwright-browsers
 
 # Configure Oracle client
 RUN echo "$ORACLE_HOME" > /etc/ld.so.conf.d/oracle-instantclient.conf && \
