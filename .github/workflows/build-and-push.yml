@@ -27,7 +27,7 @@ env:
   IMAGE_NAME: sujeeth62/apache-superset
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
 jobs:
   build:
@@ -145,7 +145,7 @@ jobs:
         if: ${{ (github.event.inputs.action == 'push' || github.event_name == 'push') && success() }}
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: v${{ steps.version.outputs.version }}
           release_name: Version ${{ steps.version.outputs.version }}
