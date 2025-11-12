@@ -141,23 +141,34 @@ jobs:
           # Add your test commands here, for example:
           # docker run --rm ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} pytest
 
+      - name: Get Changelog Content
+        id: changelog
+        if: ${{ (github.event.inputs.action == 'push' || github.event_name == 'push') && success() }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          CHANGELOG_FILE="changelog/v$VERSION.md"
+          
+          if [ -f "$CHANGELOG_FILE" ]; then
+            # Use the version-specific changelog if it exists
+            BODY=$(cat "$CHANGELOG_FILE")
+          else
+            # Fallback to a default message if no changelog exists
+            BODY="# Release v$VERSION\n\nThis release includes various improvements and bug fixes.\n\n*For detailed changes, check the commit history.*"
+          fi
+          
+          # Escape special characters for JSON
+          BODY_JSON=$(echo "$BODY" | jq -Rs . | cut -d'"' -f2- | rev | cut -d'"' -f2- | rev)
+          echo "body=$BODY_JSON" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         if: ${{ (github.event.inputs.action == 'push' || github.event_name == 'push') && success() }}
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          release_name: Version ${{ steps.version.outputs.version }}
+          name: Version ${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
           draft: false
           prerelease: false
-
-      - name: Update Docker Hub Description
-        if: ${{ (github.event.inputs.action == 'push' || github.event_name == 'push') && success() }}
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAME }}
-          short-description: "Apache Superset with Extended Database Support"
-          readme-filepath: ./README.md
+          generate_release_notes: false
