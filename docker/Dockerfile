@@ -4,14 +4,6 @@
 FROM apache/superset:5.0.0
 
 # =============================================================================
-# Environment Variables
-# =============================================================================
-ENV ORACLE_HOME=/usr/lib/oracle/23/client64 \
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/oracle/23/client64/lib \
-    TNS_ADMIN=/usr/lib/oracle/23/client64/lib/network/admin \
-    PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/playwright-browsers
-
-# =============================================================================
 # Labels
 # =============================================================================
 LABEL maintainer="Sujeet Hinge <sujeet-a.hinge@db.com>" \
@@ -48,6 +40,14 @@ RUN set -ex && \
     alien -i --scripts oracle-instantclient-sqlplus-23.9.0.25.07-1.el8.x86_64.rpm && \
     rm -f /tmp/oracle/*.rpm
 
+# =============================================================================
+# Environment Variables
+# =============================================================================
+ENV ORACLE_HOME=/usr/lib/oracle/23/client64 \
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/oracle/23/client64/lib \
+    TNS_ADMIN=/usr/lib/oracle/23/client64/lib/network/admin \
+    PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/playwright-browsers
+
 # Configure Oracle client
 RUN echo "$ORACLE_HOME" > /etc/ld.so.conf.d/oracle-instantclient.conf && \
     ldconfig && \
@@ -59,19 +59,14 @@ RUN echo "$ORACLE_HOME" > /etc/ld.so.conf.d/oracle-instantclient.conf && \
 # Install database drivers and other Python packages
 RUN . /app/.venv/bin/activate && \
     uv pip install --no-cache-dir \
-        # Database drivers
         psycopg2-binary \
         cx_Oracle \
         sqlalchemy-solr \
-        elasticsearch-dpapi \
         sqlalchemy-bigquery[bqstorage] \
         mysqlclient \
         pymssql \
-        # Authentication
         Authlib \
-        # File handling
         openpyxl \
-        # Image processing
         Pillow
 
 # =============================================================================
