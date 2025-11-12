@@ -11,7 +11,6 @@ This repository contains a customized Docker image for [Apache Superset](https:/
     - MySQL (mysqlclient)
     - Microsoft SQL Server (pymssql)
     - Google BigQuery (sqlalchemy-bigquery)
-    - Elasticsearch (elasticsearch-dpapi)
     - Apache Solr (sqlalchemy-solr)
 - Playwright for Alerts & Reports
 - OpenPyXL for Excel file uploads
