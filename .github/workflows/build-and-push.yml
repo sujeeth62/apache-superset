@@ -14,9 +14,14 @@ on:
         - test
         - push
       version-bump:
-        description: 'Version bump type (major, minor, patch, or specific version) - only for push action'
+        description: 'Version bump type (only used when action is push)'
         required: false
         default: 'patch'
+        type: choice
+        options:
+        - major
+        - minor
+        - patch
 
 env:
   IMAGE_NAME: sujeeth62/apache-superset
