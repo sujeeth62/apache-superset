@@ -151,3 +151,13 @@ jobs:
           release_name: Version ${{ steps.version.outputs.version }}
           draft: false
           prerelease: false
+
+      - name: Update Docker Hub Description
+        if: ${{ (github.event.inputs.action == 'push' || github.event_name == 'push') && success() }}
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE_NAME }}
+          short-description: "Apache Superset with Extended Database Support"
+          readme-filepath: ./README.md
