@@ -56,39 +56,60 @@ jobs:
             # For push action, get version from Docker Hub
             echo "Fetching latest version from Docker Hub..."
             API_RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${{ env.IMAGE_NAME }}/tags/?page_size=100")
-
+      
             # Debug: Print API response (without exposing tokens)
             echo "API Response: ${API_RESPONSE:0:200}..."
-
+      
             # Get the latest version tag
             if [ -z "$API_RESPONSE" ]; then
               echo "Warning: Empty response from Docker Hub API, using default version 0.0.0"
               LATEST_TAG="0.0.0"
             else
               LATEST_TAG=$(echo "$API_RESPONSE" | \
-                jq -r '.results[] | select(.name | test("^\\d+\\.\\d+\\.\\d+$")) | .name' | \
-                sort -V | tail -n 1 || echo "0.0.0")
+              jq -r '.results[] | select(.name | test("^\\d+\\.\\d+\\.\\d+$")) | .name' | \
+              sort -V | tail -n 1 || echo "0.0.0")
             fi
-
+      
             # If we still don't have a valid version, default to 0.0.0
             if [[ ! "$LATEST_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              echo "Warning: Invalid version format '$LATEST_TAG' from Docker Hub, defaulting to 0.0.0"
-              LATEST_TAG="0.0.0"
+            echo "Warning: Invalid version format '$LATEST_TAG' from Docker Hub, defaulting to 0.0.0"
+            LATEST_TAG="0.0.0"
             fi
-
+            
             echo "Current latest version: $LATEST_TAG"
-
-            # Rest of your version bumping logic remains the same...
+            
+            # Parse version components
             IFS='.' read -r -a VERSION_PARTS <<< "$LATEST_TAG"
             MAJOR=${VERSION_PARTS[0]}
             MINOR=${VERSION_PARTS[1]}
             PATCH=${VERSION_PARTS[2]}
-
+            
             # Bump version based on input
             case "${{ github.event.inputs.version-bump }}" in
-              # ... rest of the case statement remains the same
+              major)
+                NEW_MAJOR=$((MAJOR + 1))
+                NEW_VERSION="${NEW_MAJOR}.0.0"
+                ;;
+              minor)
+                NEW_MINOR=$((MINOR + 1))
+                NEW_VERSION="${MAJOR}.${NEW_MINOR}.0"
+                ;;
+              patch)
+                NEW_PATCH=$((PATCH + 1))
+                NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+                ;;
+              *)
+                # If it's a specific version, use it
+                if [[ "${{ github.event.inputs.version-bump }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                  NEW_VERSION="${{ github.event.inputs.version-bump }}"
+                else
+                  echo "Invalid version format. Using patch bump."
+                  NEW_PATCH=$((PATCH + 1))
+                  NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+                fi
+                ;;
             esac
-
+            
             echo "New version: $NEW_VERSION"
             echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           else
