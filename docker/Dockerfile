@@ -6,7 +6,7 @@ FROM apache/superset:5.0.0
 # =============================================================================
 # Labels
 # =============================================================================
-LABEL maintainer="Sujeet Hinge <sujeet-a.hinge@db.com>" \
+LABEL maintainer="Sujeet Hinge <sujeeth62@gmail.com>" \
       description="Apache Superset with Oracle and other database drivers" \
       version="1.0.0"
 

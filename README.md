@@ -6,13 +6,13 @@ This repository contains a customized Docker image for [Apache Superset](https:/
 
 - Based on the official `apache/superset:5.0.0` image
 - Additional database drivers included:
-  - Oracle
-  - PostgreSQL (psycopg2-binary)
-  - MySQL (mysqlclient)
-  - Microsoft SQL Server (pymssql)
-  - Google BigQuery (sqlalchemy-bigquery)
-  - Elasticsearch (elasticsearch-dpapi)
-  - Apache Solr (sqlalchemy-solr)
+    - Oracle
+    - PostgreSQL (psycopg2-binary)
+    - MySQL (mysqlclient)
+    - Microsoft SQL Server (pymssql)
+    - Google BigQuery (sqlalchemy-bigquery)
+    - Elasticsearch (elasticsearch-dpapi)
+    - Apache Solr (sqlalchemy-solr)
 - Playwright for Alerts & Reports
 - OpenPyXL for Excel file uploads
 - Pillow for image processing
@@ -33,8 +33,8 @@ This repository contains a customized Docker image for [Apache Superset](https:/
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/Apache-Superset.git
-   cd Apache-Superset
+   git clone https://github.com/sujeeth62/apache-superset.git
+   cd apache-superset
    ```
 
 2. Copy the example environment file and update it with your configuration:
@@ -69,7 +69,7 @@ docker run -d --name superset \
   -p 8088:8088 \
   -e SUPERSET_SECRET_KEY="your-secret-key" \
   -e SUPERSET_LOAD_EXAMPLES=yes \
-  your-dockerhub-username/apache-superset-custom:latest
+  your-dockerhub-sujeeth62/apache-superset:latest
 ```
 
 ## Configuration
@@ -109,7 +109,7 @@ For detailed configuration options and advanced database connection settings, re
 ### Building the Image
 
 ```bash
-docker build -t your-dockerhub-username/apache-superset-custom:latest -f docker/Dockerfile .
+docker build -t sujeeth62/apache-superset:latest -f docker/Dockerfile .
 ```
 
 ### Running Tests
@@ -167,7 +167,7 @@ Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTIN
 
 For support, questions, or contributions, please:
 
-- Open an issue in the [GitHub repository](https://github.com/sujeeth62/Apache-Superset/issues)
+- Open an issue in the [GitHub repository](https://github.com/sujeeth62/apache-superset/issues)
 - Email: [sujeeth62@gmail.com](mailto:sujeeth62@gmail.com)
 
 ---
